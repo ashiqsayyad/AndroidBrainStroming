@@ -13,9 +13,15 @@ import java.util.ArrayList;
 
 public class MainRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    public interface onClickInterface{
+        public void onclick(int position);
+    }
+
     private ArrayList<MainRecycleViewItem> listitems;
-    public MainRecycleViewAdapter(ArrayList<MainRecycleViewItem> listitems){
+    private  onClickInterface itemClickListener;
+    public MainRecycleViewAdapter(ArrayList<MainRecycleViewItem> listitems,onClickInterface itemClickListener){
         this.listitems = listitems;
+        this.itemClickListener = itemClickListener;
     }
     @NonNull
     @Override
@@ -40,7 +46,14 @@ public class MainRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         public MainRecycleViewHolder(@NonNull View itemView) {
             super(itemView);
+
             title = itemView.findViewById(R.id.mainitemtitle);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemClickListener.onclick(MainRecycleViewHolder.this.getAdapterPosition());
+                }
+            });
         }
     }
 }

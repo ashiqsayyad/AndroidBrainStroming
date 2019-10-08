@@ -1,11 +1,17 @@
 package com.ashsample.androidconcepts;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 
 import com.ashsample.androidconcepts.mvvm.room.NoteDao;
 import com.ashsample.androidconcepts.mvvm.room.NoteDatabase;
 import com.ashsample.androidconcepts.mvvm.room.NoteEntity;
+import com.ashsample.androidconcepts.services.LocalService;
+import com.ashsample.androidconcepts.services.MessengerService;
+import com.ashsample.remoteservice.IRemoteService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,12 +20,18 @@ import androidx.recyclerview.widget.OrientationHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.ashsample.androidconcepts.recycleviews.pojos.MainRecycleViewAdapter;
 import com.ashsample.androidconcepts.recycleviews.pojos.MainRecycleViewItem;
@@ -29,10 +41,109 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainRecycleViewAdapter.onClickInterface {
+   //Android Architecture
+    //https://developer.android.com/guide/platform
+
     private ArrayList<MainRecycleViewItem> listitems;
     RecyclerView.Adapter mainRecycleViewAdapter;
     RecyclerView.LayoutManager mainRecycleViewLayoutManager;
+
+    //Local service specific
+    LocalService mService;
+    boolean mBound = false;
+    /** Defines callbacks for service binding, passed to bindService() */
+    private ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            LocalService.LocalBinder binder = (LocalService.LocalBinder) service;
+            mService = (LocalService) binder.getService();
+            mBound = true;
+            Toast.makeText(MainActivity.this,"Local Service Connected",Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+            Toast.makeText(MainActivity.this,"Local Service onServiceDisconnected",Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    //below for talking to remote service using Messenger
+    /** Messenger for communicating with the service. */
+    Messenger mServiceMessenger = null;
+
+    /** Flag indicating whether we have called bind on the service. */
+    boolean boundMessenger;
+
+    /**
+     * Class for interacting with the main interface of the service.
+     */
+    private ServiceConnection mConnectionMessneger = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // This is called when the connection with the service has been
+            // established, giving us the object we can use to
+            // interact with the service.  We are communicating with the
+            // service using a Messenger, so here we get a client-side
+            // representation of that from the raw IBinder object.
+            mServiceMessenger = new Messenger(service);
+            boundMessenger = true;
+            Toast.makeText(MainActivity.this,"Messenger Service Connected",Toast.LENGTH_SHORT).show();
+        }
+
+
+        public void onServiceDisconnected(ComponentName className) {
+            // This is called when the connection with the service has been
+            // unexpectedly disconnected -- that is, its process crashed.
+            mServiceMessenger = null;
+            boundMessenger = false;
+            Toast.makeText(MainActivity.this,"Messenger Service disConnected",Toast.LENGTH_SHORT).show();
+        }
+    };
+  private class ResponseHandler extends Handler{
+      @Override
+      public void handleMessage(Message msg) {
+          switch (msg.what){
+              case MessengerService.TO_UPPER_CASE_RESPONSE:
+                 String result = msg.getData().getString("respData");
+                  Toast.makeText(MainActivity.this,"message from messenger service:::"+result,Toast.LENGTH_SHORT).show();
+          }
+
+      }
+  }
+    private ResponseHandler responseHandler = new ResponseHandler();
+
+  //Remote AIDL Service
+  IRemoteService iRemoteService;
+  boolean ismBoundAIDL;
+    /**
+     * Service connection is used to know the status of the remote service
+     */
+    ServiceConnection mServiceConnectionAIDL = new ServiceConnection() {
+///imp notes
+//    //in client manually create package the crate aidl with same name using android studio and then finally copy the content
+//    // original aidl into above aidl else it will give compilation error
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            // TODO Auto-generated method stub
+
+            iRemoteService = null;
+            Log.d("Ashiq", "IRemote ServiceBinding - Service disconnected");
+            ismBoundAIDL = false;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service)
+        {
+            // TODO Auto-generated method stub
+            iRemoteService = IRemoteService.Stub.asInterface((IBinder) service);
+            Log.d("IRemote", "Binding is done - Service connected");
+            ismBoundAIDL = true;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +191,33 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-     public void tryMaps(){
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Intent intent = new Intent(this, LocalService.class);
+        //bindService(intent, connection, Context.BIND_AUTO_CREATE);
+
+        //Bind to messenger service
+        // intent = new Intent(this, MessengerService.class);
+        //bindService(intent, mConnectionMessneger, Context.BIND_AUTO_CREATE);
+        //Bind to remote app aidl service
+        Intent intent = new Intent("com.ashsample.remoteservice.IRemoteService");
+         intent.setPackage("com.ashsample.remoteservice");
+        Log.i("Ashiq","IRemoteService.class.getName()"+IRemoteService.class.getName());
+        bindService(intent, mServiceConnectionAIDL, Context.BIND_AUTO_CREATE);
+
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+      //  unbindService(connection);
+       // mBound = false;
+    }
+
+    public void tryMaps(){
         ArrayMap<String, String> temp = new ArrayMap<>();
          temp.put("second","tiger");
         temp.put("first","zebra");
@@ -95,9 +232,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     public void initMainRecylceView(){
        listitems = MainRecycleViewItemsGenerator.getInstance().getListitems();
-        mainRecycleViewAdapter = new MainRecycleViewAdapter(listitems);
+        mainRecycleViewAdapter = new MainRecycleViewAdapter(listitems,this);
         mainRecycleViewLayoutManager =new LinearLayoutManager(this, OrientationHelper.VERTICAL, false);
         RecyclerView mainRecycleView = findViewById(R.id.mainrecycleview);
         mainRecycleView.setAdapter(mainRecycleViewAdapter);
@@ -131,5 +269,49 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onclick(int position) {
+        //Toast.makeText(this, "recyclerview postion::"+position, Toast.LENGTH_SHORT).show();
+        switch(position){
+            //Local Service
+            case 2:
+                if (mBound) {
+                    // Call a method from the LocalService.
+                    // However, if this call were something that might hang, then this request should
+                    // occur in a separate thread to avoid slowing down the activity performance.
+                    int num = mService.getRandomNumber();
+                    Toast.makeText(this, "number: " + num, Toast.LENGTH_SHORT).show();
+                    break;
+                }
+            case 3:
+                if (boundMessenger) {
+                    // Call a method from the LocalService.
+                    // However, if this call were something that might hang, then this request should
+                    // occur in a separate thread to avoid slowing down the activity performance.
+
+                    try {
+                        Message msg = Message.obtain(null, MessengerService.MSG_SAY_HELLO, 0, 0);
+                        mServiceMessenger.send(msg);
+                        msg = Message.obtain(null, MessengerService.CONVERT_TO_UPPERCASE, 0, 0);
+                        msg.replyTo = new Messenger(responseHandler);
+                        Bundle b = new Bundle();
+                        b.putString("data", "Convert Me To Uppere case");
+                        msg.setData(b);
+                        mServiceMessenger.send(msg);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+            case 4:
+                try {
+                    Toast.makeText(this, iRemoteService.add(2, 3), Toast.LENGTH_SHORT).show();
+                }catch(Exception e){
+                       Log.i("Ashiq","Excpetion in remote aidl service"+e.toString());
+                }
+                break;
+        }
     }
 }

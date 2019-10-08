@@ -23,6 +23,10 @@ public final class MainRecycleViewItemsGenerator {
             listitems = new ArrayList<>();
             listitems.add(new MainRecycleViewItem("LRUCache"));
             listitems.add(new MainRecycleViewItem("Room"));
+            listitems.add(new MainRecycleViewItem("Local Bound Service"));
+            listitems.add(new MainRecycleViewItem("Remote Messenger Service"));
+            listitems.add(new MainRecycleViewItem("Remote AIDL Service"));
+
 
         }
      }

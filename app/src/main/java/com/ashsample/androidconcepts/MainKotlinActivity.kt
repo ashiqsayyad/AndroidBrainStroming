@@ -1,5 +1,6 @@
 package com.ashsample.androidconcepts
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,6 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.ashsample.androidconcepts.databinding.ProductDetailsUsingDataBindingActivity
 import com.ashsample.androidconcepts.mvvm.databinding.SampleViewModel
 
 import kotlinx.android.synthetic.main.activity_main_kotlin.*
@@ -34,6 +36,12 @@ class MainKotlinActivity : AppCompatActivity() {
             CoroutineScope(IO).launch {
                 fetchUsers();
             }
+        }
+
+        butn = findViewById<Button>(R.id.databinding);
+        butn.setOnClickListener{
+            var  intent : Intent = Intent(this,ProductDetailsUsingDataBindingActivity::class.java)
+             startActivity(intent);
         }
         setSupportActionBar(toolbar)
 

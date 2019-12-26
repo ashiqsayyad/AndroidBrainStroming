@@ -1,20 +1,29 @@
 package com.ashsample.androidconcepts;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 
+import com.ashsample.androidconcepts.Fragments.FragmentHolderActivity;
+import com.ashsample.androidconcepts.databinding.DataBindingHomeActivity;
+import com.ashsample.androidconcepts.kotlinrecycler.KRecycleViewActivity;
 import com.ashsample.androidconcepts.mvvm.room.NoteDao;
 import com.ashsample.androidconcepts.mvvm.room.NoteDatabase;
 import com.ashsample.androidconcepts.mvvm.room.NoteEntity;
+import com.ashsample.androidconcepts.receivers.ContextRegisteredReceiver;
 import com.ashsample.androidconcepts.services.LocalService;
 import com.ashsample.androidconcepts.services.MessengerService;
+import com.ashsample.androidconcepts.workmanager.WorkManagerActivity;
 import com.ashsample.remoteservice.IRemoteService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.OrientationHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,6 +47,7 @@ import com.ashsample.androidconcepts.recycleviews.pojos.MainRecycleViewItem;
 import com.ashsample.androidconcepts.recycleviews.pojos.MainRecycleViewItemsGenerator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -48,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements MainRecycleViewAd
     private ArrayList<MainRecycleViewItem> listitems;
     RecyclerView.Adapter mainRecycleViewAdapter;
     RecyclerView.LayoutManager mainRecycleViewLayoutManager;
+    public static final String localBroadcastAction ="com.example.broadcast.localbroadcast";
 
     //Local service specific
     LocalService mService;
@@ -151,6 +162,23 @@ public class MainActivity extends AppCompatActivity implements MainRecycleViewAd
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        BroadcastReceiver br = new ContextRegisteredReceiver();
+
+
+        //example of context registered broadcast for airplane mode
+        /*IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+        this.registerReceiver(br, filter);
+
+*/
+        //context registered RX
+       /* IntentFilter filter = new IntentFilter(localBroadcastAction);
+        registerReceiver(br, filter);*/
+
+        //local broadcast RX
+         IntentFilter filter = new IntentFilter(localBroadcastAction);
+        LocalBroadcastManager.getInstance(this).registerReceiver(br, filter);
+
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -305,12 +333,39 @@ public class MainActivity extends AppCompatActivity implements MainRecycleViewAd
                     }
                     break;
                 }
+                //remote service demo
             case 4:
                 try {
                     Toast.makeText(this, iRemoteService.add(2, 3), Toast.LENGTH_SHORT).show();
                 }catch(Exception e){
                        Log.i("Ashiq","Excpetion in remote aidl service"+e.toString());
                 }
+                break;
+            case 5:
+                Intent i = new Intent(this, WorkManagerActivity.class);
+                this.startActivity(i);
+                break;
+            case 6:
+                Intent intent = new Intent();
+                intent.setAction(localBroadcastAction);
+                intent.putExtra("data","Notice me senpai!");
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                //sendBroadcast(intent);
+            case 7:
+                Intent temp = new Intent(this, FragmentHolderActivity.class);
+                this.startActivity(temp);
+                break;
+            case 8:
+                 temp = new Intent(this, MainKotlinActivity.class);
+                this.startActivity(temp);
+                break;
+            case 9:
+                temp = new Intent(this, KRecycleViewActivity.class);
+                this.startActivity(temp);
+                break;
+            case 10:
+                temp = new Intent(this, DataBindingHomeActivity.class);
+                this.startActivity(temp);
                 break;
         }
     }

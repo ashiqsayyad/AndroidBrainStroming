@@ -26,6 +26,12 @@ public final class MainRecycleViewItemsGenerator {
             listitems.add(new MainRecycleViewItem("Local Bound Service"));
             listitems.add(new MainRecycleViewItem("Remote Messenger Service"));
             listitems.add(new MainRecycleViewItem("Remote AIDL Service"));
+            listitems.add(new MainRecycleViewItem("Work Manager"));
+            listitems.add(new MainRecycleViewItem("Local Broadcast"));
+            listitems.add(new MainRecycleViewItem("Fragments"));
+            listitems.add(new MainRecycleViewItem("Kotlin Activity"));
+            listitems.add(new MainRecycleViewItem("Kotlin RecycleView"));
+            listitems.add(new MainRecycleViewItem("DataBinding Activity"));
 
 
         }

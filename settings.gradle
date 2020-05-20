@@ -1,1 +1,2 @@
-include ':app', ':remoteservice'
+include ':app', ':remoteservice', ':remoteservice_calculator', ':remoteserviceclient', ':remoteservicekotlin', ':kotlinremoteservice', ':mvvm'
+include ':networklib'

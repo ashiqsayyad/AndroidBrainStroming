@@ -40,6 +40,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.ashsample.androidconcepts.recycleviews.pojos.MainRecycleViewAdapter;
@@ -161,6 +162,8 @@ public class MainActivity extends AppCompatActivity implements MainRecycleViewAd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
+
+
         setSupportActionBar(toolbar);
         BroadcastReceiver br = new ContextRegisteredReceiver();
 

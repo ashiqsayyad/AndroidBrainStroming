@@ -21,4 +21,16 @@
         android:layout_height="wrap_content"
         android:text="@string/databinding"
         />
+
+    <Button
+        android:id="@+id/rem_bind"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/rem_msg_bind"/>
+
+    <Button
+        android:id="@+id/rem_hello"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/rem_hello"/>
 </LinearLayout>

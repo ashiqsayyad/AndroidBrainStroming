@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.ashsample.androidconcepts.R;
 
@@ -18,6 +19,7 @@ public class DetailedFragment extends Fragment {
     public static final String ARGS_TEXT="key_text";
 
     public static  String args_text_val;
+    private DemoViewModel demoViewModel;
 
 
     public static DetailedFragment newInstance(String text){
@@ -87,6 +89,10 @@ public class DetailedFragment extends Fragment {
         args_text_val = getArguments().getString(ARGS_TEXT);
         text.setText(args_text_val);
         Log.i("Ashiq","onCreateView=============::"+args_text_val);
+        demoViewModel = ViewModelProviders.of(this.getActivity()).get(DemoViewModel.class);
+        Log.i("Ashiq","view Model in fragment::"+demoViewModel);
         return view;
     }
+
+
 }

@@ -8,6 +8,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="databinding">Data Binding Demo</string>
+    <string name="rem_msg_bind">Bind to Remote Messenger Service</string>
+    <string name="rem_hello">Display Hello via Remote Service</string>
     <string name="title_activity_product_details_using_data_binding">
         ProductDetailsUsingDataBinding
     </string>

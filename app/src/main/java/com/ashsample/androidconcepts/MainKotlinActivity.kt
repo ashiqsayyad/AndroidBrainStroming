@@ -14,6 +14,8 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.ashsample.androidconcepts.bluetooth.BluetoothUtil
+import com.ashsample.androidconcepts.commonutils.SharedPrefUtils
 import com.ashsample.androidconcepts.databinding.DataModel
 import com.ashsample.androidconcepts.databinding.ProductDetailsUsingDataBindingActivity
 import com.ashsample.androidconcepts.mvvm.User
@@ -33,6 +35,7 @@ import java.util.*
 
 //https://github.com/irontec/android-kotlin-samples/blob/master/KotlinTest/app/src/main/java/com/irontec/examples/kotlintest/HttpUrlConnectionAsyncActivity.kt
 class MainKotlinActivity : AppCompatActivity() {
+
 
     /** Messenger for communicating with the service.  */
     private var mService: Messenger? = null
@@ -73,6 +76,7 @@ class MainKotlinActivity : AppCompatActivity() {
             /*CoroutineScope(IO).launch {
                 fetchUsers();
             }*/
+           Toast.makeText(applicationContext, SharedPrefUtils.getString(applicationContext,"mykey","defValue"),Toast.LENGTH_LONG).show()
 
 
         }
@@ -108,9 +112,13 @@ class MainKotlinActivity : AppCompatActivity() {
                     .setAction("Action", null).show();
            // see the object application context
 
+            Toast.makeText(applicationContext,""+BluetoothUtil.isBluetoothSupported()+BluetoothUtil.isBluetoothEnabled(),Toast.LENGTH_LONG).show()
+            //BluetoothUtil.getPairedDevices()
+            if(!SharedPrefUtils.contains(applicationContext,"mykey")) {
+                SharedPrefUtils.putString(applicationContext,"mykey","myValue")
+            }
 
-
-           demoViewModel!!.getPosts()
+          // demoViewModel!!.getPosts()
 
 
 

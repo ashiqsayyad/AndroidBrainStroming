@@ -11,6 +11,8 @@ import com.ashiqsayyad.contactlessclientapp.ui.BaseActivity
 import com.ashiqsayyad.contactlessclientapp.viewmodels.HomeViewModel
 
 //https://android.jlelse.eu/the-complete-android-splash-screen-guide-c7db82bce565
+//https://developer.android.com/topic/libraries/data-binding/two-way
+//https://www.javarticles.com/2015/04/android-set-theme-dynamically.html
 class HomeActivity : BaseActivity() {
 
     val homeViewModel by lazy {
@@ -18,33 +20,33 @@ class HomeActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        homeViewModel.observableText.observe(this,Observer<String>{
-            Toast.makeText(applicationContext,it,Toast.LENGTH_LONG).show()
-        })
-        homeViewModel.observeInitDone().observe(this, Observer {
+
+        /*homeViewModel.observeInitDone().observe(this, Observer {
             when(it){
                 true-> Toast.makeText(applicationContext,"InitDone",Toast.LENGTH_LONG).show()
             }
-
+           showMainScreen()
 
         })
-
-
-       val binding:ActivityHomeBinding= DataBindingUtil.setContentView<ActivityHomeBinding>(this,R.layout.activity_home)
-        binding.homeviewmodel =homeViewModel
-        binding.defaultval="No Text"
-       //very imp to enable refelct changes on UI
-        binding.lifecycleOwner=this
-        homeViewModel.loadInitials()
-
-       // setContentView(R.layout.activity_home)
+        homeViewModel.loadInitials()*/
 
      /*  homeViewModel.observableText.observe(this,Observer<String>{
            Toast.makeText(applicationContext,it,Toast.LENGTH_LONG).show()
        })*/
-
+       showMainScreen()
 
     }
+     private fun showMainScreen(){
+         val binding:ActivityHomeBinding= DataBindingUtil.setContentView<ActivityHomeBinding>(this,R.layout.activity_home)
+         binding.homeviewmodel =homeViewModel
+         binding.defaultval="No Text"
+         //very imp to enable refelct changes on UI
+         binding.lifecycleOwner=this
+         homeViewModel.observableText.observe(this,Observer<String>{
+             Toast.makeText(applicationContext,it,Toast.LENGTH_LONG).show()
+         })
+
+     }
 
 
 }

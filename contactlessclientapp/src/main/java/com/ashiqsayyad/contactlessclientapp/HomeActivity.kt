@@ -21,19 +21,19 @@ class HomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        /*homeViewModel.observeInitDone().observe(this, Observer {
+        homeViewModel.observeInitDone().observe(this, Observer {
             when(it){
-                true-> Toast.makeText(applicationContext,"InitDone",Toast.LENGTH_LONG).show()
+                true-> Toast.makeText(applicationContext,"InitDone"+homeViewModel._showSignIn.value,Toast.LENGTH_LONG).show()
             }
            showMainScreen()
 
         })
-        homeViewModel.loadInitials()*/
+        homeViewModel.loadInitials()
 
      /*  homeViewModel.observableText.observe(this,Observer<String>{
            Toast.makeText(applicationContext,it,Toast.LENGTH_LONG).show()
        })*/
-       showMainScreen()
+      // showMainScreen()
 
     }
      private fun showMainScreen(){

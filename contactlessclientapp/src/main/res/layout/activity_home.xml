@@ -10,32 +10,46 @@
         <variable
             name="defaultval"
             type="String" />
+        <import type="android.view.View"/>
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".HomeActivity">
 
         <TextView
+            android:id="@+id/have_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{homeviewmodel._observableText}"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:text="@string/have_profile"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/register"
+            android:visibility="@{!homeviewmodel._showSignIn?View.VISIBLE:View.GONE}"
+            android:autoLink="web"
+            android:linksClickable="true"
+            />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Button"
             android:onClick="@{()->homeviewmodel.changeText()}"
-            tools:layout_editor_absoluteX="142dp"
-            tools:layout_editor_absoluteY="74dp"
-            tools:ignore="MissingConstraints" />
+            android:text="@string/register"
+            android:layout_centerHorizontal="true"
+            android:visibility="@{!homeviewmodel._showSignIn?View.VISIBLE:View.GONE}"
+             />
+        <Button
+            android:id="@+id/signin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->homeviewmodel.changeText()}"
+            android:visibility="@{homeviewmodel._showSignIn?View.VISIBLE:View.GONE}"
+            android:text="@string/signin"
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/have_profile"
+            />
+
+    </RelativeLayout>
 </layout>

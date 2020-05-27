@@ -1,13 +1,11 @@
 package com.ashiqsayyad.contactlessclientapp.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.app.Application
+import androidx.lifecycle.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-open abstract class BaseViewModel : ViewModel() {
+open abstract class BaseViewModel( application: Application) : AndroidViewModel(application) {
 
     protected val init_done = MutableLiveData<Boolean>()
 

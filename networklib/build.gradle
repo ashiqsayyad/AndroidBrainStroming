@@ -1,6 +1,11 @@
+
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.novoda.bintray-release'
+//apply plugin: 'maven-publish'
+
+
 
 android {
     compileSdkVersion 29
@@ -33,4 +38,75 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}
+ext {
+
+    //For bintray and jcenter distribution
+    bintrayRepo = 'maven'
+    bintrayName = 'network-client'
+
+    publishedGroupId = 'com.ashiqsample.networklib'
+    libraryName = 'NetworkLibrary'
+    artifact = 'networklib' //This artifact name should be the same with library module name
+
+    libraryDescription = 'This library can be used to perform network requests in android. This lin will encapsualte httpurlconnection and retrofit'
+
+    siteUrl = 'https://github.com/ashiqsayyad/AndroidBrainStroming'
+    gitUrl = 'https://github.com/ashiqsayyad/AndroidBrainStroming.git'
+
+    libraryVersion = '1.0.0'
+
+    developerId = 'ashiqsayyad'
+    developerName = 'Ashiq Sayyad'
+    developerEmail = 'ashiqsayad@gmail.com'
+    organization = 'ashiqorg' // if you push to organization's repository.
+    licenseName = 'The Apache Software License, Version 2.0'  //Example for license
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+
+}
+//task javadoc(type: Javadoc) {
+   // excludes = ['**/*.kt'] // < ---- Exclude all kotlin files from javadoc file.
+    // ...
+//}
+/*allprojects {
+    tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption('encoding', 'UTF-8')
+        options.addBooleanOption('Xdoclint:none', true)
+        tasks.withType(Javadoc).all { enabled = false }
+    }
+}*/
+//These two remote files contain Bintray configuration as described above.
+//apply from: 'https://raw.githubusercontent.com/quangctkm9207/template-files/master/android/gradle/install.gradle'
+//apply from: 'https://raw.githubusercontent.com/quangctkm9207/template-files/master/android/gradle/bintray.gradle'
+publish {
+
+    def groupProjectID = 'com.ashiqsample.networklib'
+    def artifactProjectID = 'networklib'
+    def publishVersionID = '1.0.0'
+
+    userOrg = 'ashiqsayyad' // username for jcenter account
+    repoName = 'ashiqrepo'
+    groupId = groupProjectID
+    artifactId = artifactProjectID
+    publishVersion = publishVersionID
+    desc = 'Network library'
+    website = 'https://github.com/ashiqsayyad/AndroidBrainStroming'
+   /* publishing {
+        publications {
+            MyPub(MavenPublication) {
+                groupId groupProjectID
+                artifactId artifactProjectID
+                version publishVersionID
+
+                //don't forget to add bundleRelease
+                artifact 'networklib'
+
+            }
+        }
+    }*/
+
+    //Step 3: don't forget to add your custom publication
+    //publications = ['MyPub']
 }

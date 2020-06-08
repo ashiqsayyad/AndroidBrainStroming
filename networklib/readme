@@ -1,0 +1,73 @@
+How to upload aar/jar on jcenter/maven
+//Issues
+https://stackoverflow.com/questions/34874175/disable-all-javadoc-in-gradle
+https://stackoverflow.com/questions/24848404/javadoc-fails-with-illegal-package-name-error
+
+https://android.jlelse.eu/how-to-distribute-android-library-in-a-convenient-way-d43fb68304a7
+https://medium.com/@anitaa_1990/6-easy-steps-to-upload-your-android-library-to-bintray-jcenter-59e6030c8890
+
+1)Create account on https://bintray.com/
+2) Instructions to generate GPG key(pubic and private key)
+https://help.github.com/en/github/authenticating-to-github/generating-a-new-gpg-key
+
+3) Go to https://bintray.com/profile/edit and add GPG signing key (public and private keys)
+4)Go to your homepage (click on jfrog icon)and click Add New Repository button and Add new repository
+
+Now lets upload our aar on our maven repo
+
+First Approach -
+
+1) Add the following code under the root build.gradle file:
+classpath 'com.novoda:bintray-release:{latest_version}'
+Latest version can be found at https://github.com/novoda/bintray-release/releases
+
+2) Add project details to the build.gradle file under the /app directory
+apply plugin: ‘com.android.library’
+publish {
+
+    def groupProjectID = '{package_name}'
+    def artifactProjectID = '{name_of_your_library}'
+    def publishVersionID = 'library_version_code'
+
+    userOrg = '{username_of_bintray}'
+    repoName = 'repository_name'
+    groupId = groupProjectID
+    artifactId = artifactProjectID
+    publishVersion = publishVersionID
+    desc = '{library description}'
+    website = '{github_url}
+
+}
+
+//example is at
+
+apply plugin: 'com.novoda.bintray-release'
+apply plugin: 'com.android.library'
+
+
+
+//Step II: Add the below publish details
+publish {
+
+     def groupProjectID = 'com.ashiqsample.networklib'
+        def artifactProjectID = 'networklib'
+        def publishVersionID = '1.0.0'
+
+    userOrg = 'ashiqsayyad'
+    repoName = 'ashiqrepo'
+    groupId = com.ashiqsample.networklib
+    artifactId = networklib
+    publishVersion = 1.0.0
+    desc = 'Android library for displaying data based on JSON configuration fetched from server. With this library, you can kiss goodbye to string.xml, dimen.xml, arrays.xml. Keep all your string/integer/array config in one file. The library will automatically fetch the data from the url you provide.'
+    website = 'https://github.com/ashiqsayyad/AndroidBrainStroming'
+}
+
+Finally run below command to upload aar to ur repo
+>gradlew bintrayUpload -PbintrayUser=ashiqsayyad -PbintrayKey=d1f175df330d9c0a263f7dcec37b480839c306c7 -PdryRun=false
+
+
+
+
+
+
+
